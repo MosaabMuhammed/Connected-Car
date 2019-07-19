@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Connected Cars</title>
+	<style>
+	   /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+	</style>
+</head>
+<body>
+	<div id="map"></div>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js"></script>
+
+	<script>
+		var socket = io.connect();
+		var map;
+		var markers = [];
+
+		function initMap() {
+			// Create a map
+			map = new google.maps.Map(document.getElementById('map'), {
+				zoom: 3,
+				center: {lat: 30, lng: 25}
+			});
+		}
+
+		// Unique Color for each car.
+		registeredCars= {
+			  1: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png", 
+			  2: "http://maps.google.com/mapfiles/ms/icons/green-dot.png", 
+			  3: "http://maps.google.com/mapfiles/ms/icons/pink-dot.png", 
+			  4: "http://maps.google.com/mapfiles/ms/icons/purple-dot.png", 
+			  5: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png", 
+			  6: "http://maps.google.com/mapfiles/ms/icons/ltblue-dot.png", 
+			  7: "http://maps.google.com/mapfiles/ms/icons/red-dot.png", 
+			  8: "http://maps.google.com/mapfiles/ms/icons/orange-dot.png",
+			  9: "http://maps.google.com/mapfiles/ms/icons/green-dot.png", 
+			  10: "http://maps.google.com/mapfiles/ms/icons/yellow-dot.png"
+		};
+
+		socket.on('data', function(data) {
+			// Remove all the markers 
+			function setMapOnAll(map) {
+				for (var i = 0; i < markers.length; i++) {
+				  markers[i].setMap(map);
+				}
+			}
+
+		    // Removes the markers from the map, but keeps them in the array.
+			function clearMarkers() {
+				setMapOnAll(null);
+			}
+
+			// Clear All the markers
+			clearMarkers();
+
+			car = data.data;
+			for (var key in car) {
+				if (car.hasOwnProperty(key)) {
+					carObj = JSON.parse(car[key]);
+					VIN = carObj.VIN;
+					var marker = new google.maps.Marker({
+						position: { lat: carObj.lat , lng: carObj.lng },
+						map: map,
+						title: 'Car: ' + carObj.VIN + ' - SPeed: ' + carObj.speed  + ' - Fuel: ' + carObj.fuel + ' - lat: ' + carObj.lat  + ' - lng: ' +  carObj.lng ,
+						icon: {
+						url: registeredCars[VIN]
+						}
+					});
+					markers.push(marker);
+				}
+			}
+		});
+		// asdlkfj alksdjf 
+
+	</script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDbZgTNy8dlXdewJ8vVFk8qa49zA_SFnRI&callback=initMap"
+  type="text/javascript"></script>
+</body>
+</html>
