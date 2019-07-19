@@ -1,5 +1,5 @@
 # Connected Car Demo
-### Prequesites & Technologies used:
+### Prerequisites & Technologies used:
 - JDK 7 or 8
 - Python 3
 - SSH
